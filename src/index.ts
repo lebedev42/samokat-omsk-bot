@@ -44,6 +44,6 @@ app.post("/api/sendAnswer", async (req, res) => {
   res.status(200).end();
 });
 
-app.listen("localhost", process.env.PORT () => {
+app.listen(parseInt(process.env.PORT), "localhost", () => {
   console.log("Server started", process.env.PORT);
 });
