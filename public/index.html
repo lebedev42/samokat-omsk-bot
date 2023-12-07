@@ -1,50 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Quiz Bot</title>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta name="author" content="Shinkarenko Max" />
-    <script type="module" crossorigin src="/assets/index.1b4446f7.js"></script>
-    <link rel="stylesheet" href="/assets/index.90dadea5.css">
-  </head>
-  <body>
-    <div
-      class="container mx-auto tg-movable-screen-height flex justify-center items-center w-full max-w-xs px-6"
-    >
-      <div class="w-full">
-        <div>
-          <span
-            id="progress-text"
-            class="text-base dark:text-blue-500 text-blue-600"
-          ></span>
-          <div
-            id="progressbar"
-            class="w-9/12 border-0 rounded-full h-2 bg-slate-200"
-          >
-            <div
-              id="progressbar-full"
-              class="h-full rounded-full dark:bg-blue-500 bg-blue-600"
-            ></div>
-          </div>
-        </div>
-        <div class="flex justify-center">
-          <div id="content-section">
-            <p
-              class="text-base leading-relaxed mt-0 mb-4 dark:text-white text-gray-800"
-              id="question"
-            ></p>
-            <div id="answers" class="disabled:opacity-5 opacity-1"></div>
-          </div>
-        </div>
-        <div class="flex space-x-2 justify-center">
-          <button class="btn w-1/2 h-10" id="sendanswer">answer</button>
-        </div>
-      </div>
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <title>Рейтинг игроков</title>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/eruda"></script> -->
+
+  <style type="text/css">
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed, 
+    figure, figcaption, footer, header, hgroup, 
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      font: inherit;
+      vertical-align: baseline;
+    }
+    /* HTML5 display-role reset for older browsers */
+    article, aside, details, figcaption, figure, 
+    footer, header, hgroup, menu, nav, section {
+      display: block;
+    }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+    body {
+      line-height: 1;
+      background-color: #ffffff;
+    }
+    ol, ul {
+      list-style: none;
+    }
+    blockquote, q {
+      quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+      content: '';
+      content: none;
+    }
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+  </style>
+
+  <style>
+    @import url('https://fonts.cdnfonts.com/css/euclid-circular-a');
+  </style>
+
+  <style type="text/css">
+    .wrapper {
+      padding: 1rem;
+    }
+
+    .title {
+      color: black;
+      font-size: 1.5rem;
+      line-height: 3rem;
+      font-family: Euclid Circular A;
+      font-weight: 500;
+      word-wrap: break-word;
+      margin-bottom: 1rem;
+    }
+
+    .list, .current {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.4rem;
+      background-color: #F2F2F2;
+      border-radius: 0.4rem;
+      padding: 0.4rem;
+    }
+    .item.current {
+      background-color: #FF335F;
+      color: #ffffff;
+    }
+
+    .item-number {
+      color: #404040;
+      font-size: 1.5rem;
+      line-height: 3rem;
+      font-family: Euclid Circular A;
+      font-weight: 500;
+      word-wrap: break-word;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(166, 166, 166, 0.3);
+      border-radius: 0.4rem;
+      width: 3rem;
+      margin-right: 0.4rem;
+    }
+    .item.current .item-number {
+      color: #ffffff;
+      background-color: rgba(242, 242, 242, 0.3);
+    }
+
+    .item-name {
+      color: #404040;
+      font-size: 1rem;
+      line-height: 3rem;
+      font-family: Euclid Circular A;
+      font-weight: 500;
+      word-wrap: break-word;
+    }
+    .item.current .item-name {
+      color: #ffffff;
+    }
+
+    .item-points {
+      margin-left: auto;
+
+      color: #A6A6A6;
+      font-size: 1.5rem;
+      line-height: 3rem;
+      font-family: Euclid Circular A;
+      font-weight: 500;
+      word-wrap: break-word;
+      position: relative;
+
+      display: flex;
+      align-items: center;
+
+      &::after {
+        content: '';
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAzOCA0NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyLjQ4MDUgMTUuNUMxMi40ODA1IDkuOTc3MTUgMTYuOTU3NiA1LjUgMjIuNDgwNSA1LjVDMjguMDAzMyA1LjUgMzIuNDgwNSA5Ljk3NzE1IDMyLjQ4MDUgMTUuNUMzMi40ODA1IDIxLjAyMjggMjguMDAzMyAyNS41IDIyLjQ4MDUgMjUuNUMxNi45NTc2IDI1LjUgMTIuNDgwNSAyMS4wMjI4IDEyLjQ4MDUgMTUuNVpNMjIuNDgwNSAwLjVDMTQuMTk2MiAwLjUgNy40ODA0NyA3LjIxNTczIDcuNDgwNDcgMTUuNUM3LjQ4MDQ3IDE1LjYwMzIgNy40ODE1MSAxNS43MDYxIDcuNDgzNTggMTUuODA4OEM1LjUwNjgzIDE3LjA1MzkgMy44NDM3IDE4Ljc0NjYgMi42MzIyNyAyMC43NTU5QzEuMjMyMSAyMy4wNzgzIDAuNDg3NzA4IDI1LjczNjkgMC40NzgzMDEgMjguNDQ4N0MwLjQ2ODg5NCAzMS4xNjA1IDEuMTk0ODIgMzMuODI0MiAyLjU3ODg1IDM2LjE1NjJDMy45NjI4NyAzOC40ODgzIDUuOTUzMjIgNDAuNDAxNSA4LjMzODExIDQxLjY5MjRDMTAuNzIzIDQyLjk4MzIgMTMuNDEzMiA0My42MDM0IDE2LjEyMjYgNDMuNDg2OUMxOC44MzE5IDQzLjM3MDQgMjEuNDU5IDQyLjUyMTYgMjMuNzI0MyA0MS4wMzA4QzI1Ljk4OTYgMzkuNTQgMjcuODA4MyAzNy40NjMgMjguOTg3MSAzNS4wMjA3QzMwLjAxNTYgMzIuODg5OCAzMC41MjMyIDMwLjU1MDMgMzAuNDc1MSAyOC4xOTQzQzM0LjY4NDQgMjUuNTM3NyAzNy40ODA1IDIwLjg0NTQgMzcuNDgwNSAxNS41QzM3LjQ4MDUgNy4yMTU3MyAzMC43NjQ3IDAuNSAyMi40ODA1IDAuNVpNMjUuMzI3NSAzMC4yMzAyQzI0LjQwNTcgMzAuNDA3MyAyMy40NTM5IDMwLjUgMjIuNDgwNSAzMC41QzE2LjIyNTIgMzAuNSAxMC44NjQzIDI2LjY3MTEgOC42MTM0NiAyMS4yMjkyQzcuOTU3MDQgMjEuODQ4OSA3LjM4NDU4IDIyLjU1NzQgNi45MTQyNSAyMy4zMzc1QzUuOTgwOCAyNC44ODU4IDUuNDg0NTQgMjYuNjU4MiA1LjQ3ODI3IDI4LjQ2NkM1LjQ3MiAzMC4yNzM5IDUuOTU1OTUgMzIuMDQ5NyA2Ljg3ODYzIDMzLjYwNDRDNy44MDEzMiAzNS4xNTkxIDkuMTI4MjIgMzYuNDM0NiAxMC43MTgxIDM3LjI5NTJDMTIuMzA4MSAzOC4xNTU3IDE0LjEwMTYgMzguNTY5MiAxNS45MDc4IDM4LjQ5MTVDMTcuNzE0IDM4LjQxMzggMTkuNDY1NCAzNy44NDggMjAuOTc1NiAzNi44NTQxQzIyLjQ4NTggMzUuODYwMyAyMy42OTgzIDM0LjQ3NTYgMjQuNDg0MSAzMi44NDc0QzI0Ljg4NjMgMzIuMDE0MiAyNS4xNjkgMzEuMTMzMiAyNS4zMjc1IDMwLjIzMDJaIiBmaWxsPSIjQTZBNkE2Ii8+Cjwvc3ZnPgoK");
+        background-size: 1rem 1rem;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    }
+    .item.current .item-points {
+      color: #ffffff;
+
+      &::after {
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCAzOCA0NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyLjQ4MDUgMTUuNUMxMi40ODA1IDkuOTc3MTUgMTYuOTU3NiA1LjUgMjIuNDgwNSA1LjVDMjguMDAzMyA1LjUgMzIuNDgwNSA5Ljk3NzE1IDMyLjQ4MDUgMTUuNUMzMi40ODA1IDIxLjAyMjggMjguMDAzMyAyNS41IDIyLjQ4MDUgMjUuNUMxNi45NTc2IDI1LjUgMTIuNDgwNSAyMS4wMjI4IDEyLjQ4MDUgMTUuNVpNMjIuNDgwNSAwLjVDMTQuMTk2MiAwLjUgNy40ODA0NyA3LjIxNTczIDcuNDgwNDcgMTUuNUM3LjQ4MDQ3IDE1LjYwMzIgNy40ODE1MSAxNS43MDYxIDcuNDgzNTggMTUuODA4OEM1LjUwNjgzIDE3LjA1MzkgMy44NDM3IDE4Ljc0NjYgMi42MzIyNyAyMC43NTU5QzEuMjMyMSAyMy4wNzgzIDAuNDg3NzA4IDI1LjczNjkgMC40NzgzMDEgMjguNDQ4N0MwLjQ2ODg5NCAzMS4xNjA1IDEuMTk0ODIgMzMuODI0MiAyLjU3ODg1IDM2LjE1NjJDMy45NjI4NyAzOC40ODgzIDUuOTUzMjIgNDAuNDAxNSA4LjMzODExIDQxLjY5MjRDMTAuNzIzIDQyLjk4MzIgMTMuNDEzMiA0My42MDM0IDE2LjEyMjYgNDMuNDg2OUMxOC44MzE5IDQzLjM3MDQgMjEuNDU5IDQyLjUyMTYgMjMuNzI0MyA0MS4wMzA4QzI1Ljk4OTYgMzkuNTQgMjcuODA4MyAzNy40NjMgMjguOTg3MSAzNS4wMjA3QzMwLjAxNTYgMzIuODg5OCAzMC41MjMyIDMwLjU1MDMgMzAuNDc1MSAyOC4xOTQzQzM0LjY4NDQgMjUuNTM3NyAzNy40ODA1IDIwLjg0NTQgMzcuNDgwNSAxNS41QzM3LjQ4MDUgNy4yMTU3MyAzMC43NjQ3IDAuNSAyMi40ODA1IDAuNVpNMjUuMzI3NSAzMC4yMzAyQzI0LjQwNTcgMzAuNDA3MyAyMy40NTM5IDMwLjUgMjIuNDgwNSAzMC41QzE2LjIyNTIgMzAuNSAxMC44NjQzIDI2LjY3MTEgOC42MTM0NiAyMS4yMjkyQzcuOTU3MDQgMjEuODQ4OSA3LjM4NDU4IDIyLjU1NzQgNi45MTQyNSAyMy4zMzc1QzUuOTgwOCAyNC44ODU4IDUuNDg0NTQgMjYuNjU4MiA1LjQ3ODI3IDI4LjQ2NkM1LjQ3MiAzMC4yNzM5IDUuOTU1OTUgMzIuMDQ5NyA2Ljg3ODYzIDMzLjYwNDRDNy44MDEzMiAzNS4xNTkxIDkuMTI4MjIgMzYuNDM0NiAxMC43MTgxIDM3LjI5NTJDMTIuMzA4MSAzOC4xNTU3IDE0LjEwMTYgMzguNTY5MiAxNS45MDc4IDM4LjQ5MTVDMTcuNzE0IDM4LjQxMzggMTkuNDY1NCAzNy44NDggMjAuOTc1NiAzNi44NTQxQzIyLjQ4NTggMzUuODYwMyAyMy42OTgzIDM0LjQ3NTYgMjQuNDg0MSAzMi44NDc0QzI0Ljg4NjMgMzIuMDE0MiAyNS4xNjkgMzEuMTMzMiAyNS4zMjc1IDMwLjIzMDJaIiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgoK");
+      }
+    }
+
+    .item-points span {
+      margin-right: 0.4rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <h1 class="title">Рейтинг игроков</h1>
+    <div id="current"></div>
+    <div id="list"></div>
+  </div>
+
+  <script>
+  // eruda.init();
+  // Функция для выполнения GET-запросов
+  var tgUser = new URLSearchParams(window.location.search).get('user');
+
+  function createItemElement(className, index, name, points) {
+    var userItem = document.createElement('div');
+    userItem.className = "item" + ` ${className}`;
+
+    var itemNumber = document.createElement('div');
+    itemNumber.className = "item-number";
+    itemNumber.textContent = index;
+    userItem.appendChild(itemNumber);
+
+    var itemName = document.createElement('div');
+    itemName.className = "item-name";
+    itemName.textContent = name;
+    userItem.appendChild(itemName);
+
+    var itemPoints = document.createElement('div');
+    itemPoints.className = "item-points";      
+    itemPoints.innerHTML += `<span>${points}</span>`
+    userItem.appendChild(itemPoints);
     
-  </body>
+    return userItem;
+  }
+
+  async function getUser(callback) {
+    await fetch(`/api/players?user=${tgUser}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      callback(data.data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+  async function getAllUsers(callback) {
+    await fetch('/api/players')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      callback(data.data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
+  function displayUser(data) {
+    var userCurrent = document.getElementById('current');
+
+    data.forEach(function(user, index) {
+      var item = createItemElement('current', index + 1, user.attributes.name, user.attributes.points);
+      userCurrent.appendChild(item);
+    });
+  }
+
+  function displayList(data) {
+    var usersList = document.getElementById('list');
+
+    data.forEach(function(user, index) {
+      if (user.attributes.tgId !== parseInt(tgUser)) {
+        var item = createItemElement('', index + 1, user.attributes.name, user.attributes.points);
+        usersList.appendChild(item);
+      }
+    });
+  }
+
+  // Выполнение GET-запроса к API и отображение списка
+  getUser(displayUser);
+  getAllUsers(displayList);
+  </script>
+
+</body>
 </html>
