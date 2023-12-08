@@ -7,8 +7,6 @@ import qs from "qs";
 import got from "got";
 import { JSDOM } from "jsdom";
 
-// https://lk.platformaofd.ru/web/noauth/cheque/id?id=102537638726&date=1700750969000&fp=3182612905
-// https://lk.platformaofd.ru/web/noauth/cheque/id?id=102537638726&date=1700750969000&fp=3182612905
 const WEBAPP_URL = process.env.WEBAPP_URL;
 const API_URL = process.env.API_URL;
 
@@ -34,7 +32,7 @@ import {
 const magicButton = (keyboard: any, ctx: any): Keyboard | InlineKeyboard => {
   return new keyboard().webApp(
     MENU_TABLE,
-    `${WEBAPP_URL}index.html?user=${ctx.update.message.from.id}`
+    `${WEBAPP_URL}/index.html?user=${ctx.update.message.from.id}`
   );
 };
 
@@ -201,14 +199,11 @@ async function getPlayer(id) {
     .then((res) => res.json())
     .then((data) => {
       if (!Array.isArray(data.data) && data?.error) {
-        console.error(data?.error);
         throw new Error("FIND PLAYER ERROR");
       }
       return data.data[0];
     })
     .catch((error) => {
-      console.error("error", error);
-      console.error("API_URL", API_URL, process.env);
       throw new Error("FIND PLAYER ERROR");
     });
 }
