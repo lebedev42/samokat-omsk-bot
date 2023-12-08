@@ -9,6 +9,8 @@ import { getSessionKey, session } from "./session";
 import { Context } from "./context";
 import handlers from "./handlers";
 
+console.error("process.env", process.env);
+
 const bot = new Bot<ParseModeFlavor<Context>>(process.env.BOT_TOKEN);
 const throttler = apiThrottler();
 

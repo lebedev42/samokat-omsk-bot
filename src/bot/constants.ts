@@ -1,3 +1,4 @@
+import "dotenv/config";
 export const WEBAPP_URL = `${process.env.WEBAPP_URL}`;
 export const API_URL = `${process.env.API_URL}`;
 export const S3_BASE_URL =
