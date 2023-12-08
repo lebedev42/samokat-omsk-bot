@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Composer } from "grammy";
 import { Context } from "../context";
 

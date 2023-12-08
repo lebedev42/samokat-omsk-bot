@@ -1,5 +1,5 @@
+import "dotenv/config";
 import { Composer, InlineKeyboard, Keyboard, InputMediaBuilder } from "grammy";
-
 import { Context } from "../context";
 import queryString from "query-string";
 import dayjs from "dayjs";
@@ -9,11 +9,11 @@ import { JSDOM } from "jsdom";
 
 // https://lk.platformaofd.ru/web/noauth/cheque/id?id=102537638726&date=1700750969000&fp=3182612905
 // https://lk.platformaofd.ru/web/noauth/cheque/id?id=102537638726&date=1700750969000&fp=3182612905
+const WEBAPP_URL = process.env.WEBAPP_URL;
+const API_URL = process.env.API_URL;
 
 import {
   API_AUTH_TOKEN,
-  API_URL,
-  WEBAPP_URL,
   ERROR_TEXT,
   GAME_START_TIME,
   HELLO_RESPONSE_1,
