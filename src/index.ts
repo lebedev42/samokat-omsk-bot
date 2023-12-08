@@ -22,7 +22,7 @@ app.get("/api/players", async (req, res) => {
     }
   });
 
-  const data = await fetch(`${process.env.API_BASE_URL}/api/players?${query}`, {
+  const data = await fetch(`${process.env.API_URL}/api/players?${query}`, {
     method: "GET"
   })
     .then((response) => {
