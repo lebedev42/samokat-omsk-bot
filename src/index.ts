@@ -41,6 +41,6 @@ app.get("/api/players", async (req, res) => {
   res.status(200).json(data).end();
 });
 
-app.listen(parseInt(process.env.PORT), "localhost", () => {
+app.listen(parseInt(process.env.PORT), "127.0.0.1", () => {
   console.log("Server started", process.env.PORT);
 });
