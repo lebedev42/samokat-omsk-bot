@@ -208,7 +208,7 @@ async function getPlayer(id) {
     })
     .catch((error) => {
       console.error("error", error);
-      console.error("API_URL", API_URL, process.env.API_URL);
+      console.error("API_URL", API_URL, process.env);
       throw new Error("FIND PLAYER ERROR");
     });
 }
