@@ -22,12 +22,9 @@ app.get("/api/players", async (req, res) => {
     }
   });
 
-  const data = await fetch(
-    `https://9746-176-115-145-109.ngrok-free.app/api/players?${query}`,
-    {
-      method: "GET"
-    }
-  )
+  const data = await fetch(`${process.env.API_BASE_URL}/api/players?${query}`, {
+    method: "GET"
+  })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
