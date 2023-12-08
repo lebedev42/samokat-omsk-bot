@@ -201,11 +201,13 @@ async function getPlayer(id) {
     .then((res) => res.json())
     .then((data) => {
       if (!Array.isArray(data.data) && data?.error) {
+        console.error(data?.error);
         throw new Error("FIND PLAYER ERROR");
       }
       return data.data[0];
     })
-    .catch(() => {
+    .catch((error) => {
+      console.error("error", error);
       throw new Error("FIND PLAYER ERROR");
     });
 }
