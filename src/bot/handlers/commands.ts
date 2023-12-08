@@ -12,8 +12,8 @@ import { JSDOM } from "jsdom";
 
 import {
   API_AUTH_TOKEN,
-  API_BASE_URL,
-  APP_BASE_URL,
+  API_URL,
+  WEBAPP_URL,
   ERROR_TEXT,
   GAME_START_TIME,
   HELLO_RESPONSE_1,
@@ -34,7 +34,7 @@ import {
 const magicButton = (keyboard: any, ctx: any): Keyboard | InlineKeyboard => {
   return new keyboard().webApp(
     MENU_TABLE,
-    `${APP_BASE_URL}index.html?user=${ctx.update.message.from.id}`
+    `${WEBAPP_URL}index.html?user=${ctx.update.message.from.id}`
   );
 };
 
@@ -56,7 +56,7 @@ composer.command("start", async (ctx) => {
     .row()
     .webApp(
       MENU_TABLE,
-      `${APP_BASE_URL}index.html?user=${ctx.update.message.from.id}`
+      `${WEBAPP_URL}/index.html?user=${ctx.update.message.from.id}`
     )
     .resized();
 
@@ -191,7 +191,7 @@ async function getPlayer(id) {
     }
   });
 
-  return fetch(`${API_BASE_URL}api/players?${query}`, {
+  return fetch(`${API_URL}/api/players?${query}`, {
     method: "get",
     headers: {
       "Content-Type": "application/json",
@@ -220,7 +220,7 @@ async function createPlayer(data) {
     tgId: data.id.toString()
   };
 
-  return fetch(`${API_BASE_URL}api/players`, {
+  return fetch(`${API_URL}/api/players`, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -248,7 +248,7 @@ async function saveTransaction(data, checkSum, ctx) {
     player: user.id
   };
 
-  return fetch(`${API_BASE_URL}api/transactions`, {
+  return fetch(`${API_URL}/api/transactions`, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -281,7 +281,7 @@ async function savePlayerPoints(checkSum, ctx) {
     points: newPoints
   };
 
-  return fetch(`${API_BASE_URL}api/players/${user.id}`, {
+  return fetch(`${API_URL}/api/players/${user.id}`, {
     method: "put",
     headers: {
       "Content-Type": "application/json",

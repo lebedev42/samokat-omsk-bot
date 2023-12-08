@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
 Object.defineProperty(exports, "__esModule", { value: true });
 const grammy_1 = require("grammy");
 const query_string_1 = __importDefault(require("query-string"));
@@ -12,229 +14,249 @@ const jsdom_1 = require("jsdom");
 // https://lk.platformaofd.ru/web/noauth/cheque/id?id=102537638726&date=1700750969000&fp=3182612905
 const constants_1 = require("../constants");
 const magicButton = (keyboard, ctx) => {
-    return new keyboard().webApp(constants_1.MENU_TABLE, `${constants_1.APP_BASE_URL}index.html?user=${ctx.update.message.from.id}`);
+  return new keyboard().webApp(
+    constants_1.MENU_TABLE,
+    `${constants_1.WEBAPP_URL}index.html?user=${ctx.update.message.from.id}`
+  );
 };
 const composer = new grammy_1.Composer();
 composer.command("table", async (ctx) => {
-    const keyboard = magicButton(grammy_1.InlineKeyboard, ctx);
-    await ctx.reply(constants_1.MENU_TABLE, {
-        reply_markup: keyboard
-    });
+  const keyboard = magicButton(grammy_1.InlineKeyboard, ctx);
+  await ctx.reply(constants_1.MENU_TABLE, {
+    reply_markup: keyboard
+  });
 });
 composer.command("start", async (ctx) => {
-    const keyboards = new grammy_1.Keyboard()
-        .text(constants_1.MENU_RULES)
-        .row()
-        .text(constants_1.MENU_SEND)
-        .row()
-        .webApp(constants_1.MENU_TABLE, `${constants_1.APP_BASE_URL}index.html?user=${ctx.update.message.from.id}`)
-        .resized();
-    const user = await getPlayer(ctx.update.message.from.id);
-    if (!user?.id) {
-        await createPlayer(ctx.update.message.from);
-        ctx.replyWithPhoto(`${constants_1.S3_BASE_URL}/sm-hello.png`, {
-            caption: constants_1.HELLO_RESPONSE_1
-        });
-    }
-    else {
-        ctx.reply("Вы уже зарегистрированы");
-    }
-    await ctx.reply(constants_1.HELLO_RESPONSE_2, {
-        reply_markup: keyboards
+  const keyboards = new grammy_1.Keyboard()
+    .text(constants_1.MENU_RULES)
+    .row()
+    .text(constants_1.MENU_SEND)
+    .row()
+    .webApp(
+      constants_1.MENU_TABLE,
+      `${constants_1.WEBAPP_URL}index.html?user=${ctx.update.message.from.id}`
+    )
+    .resized();
+  const user = await getPlayer(ctx.update.message.from.id);
+  if (!user?.id) {
+    await createPlayer(ctx.update.message.from);
+    ctx.replyWithPhoto(`${constants_1.S3_BASE_URL}/sm-hello.png`, {
+      caption: constants_1.HELLO_RESPONSE_1
     });
+  } else {
+    ctx.reply("Вы уже зарегистрированы");
+  }
+  await ctx.reply(constants_1.HELLO_RESPONSE_2, {
+    reply_markup: keyboards
+  });
 });
 composer.hears(constants_1.MENU_RULES, async (ctx) => {
-    const stp1 = grammy_1.InputMediaBuilder.photo(`${constants_1.S3_BASE_URL}/stp-1.jpg`);
-    const stp2 = grammy_1.InputMediaBuilder.photo(`${constants_1.S3_BASE_URL}/stp-2.jpg`);
-    const stp3 = grammy_1.InputMediaBuilder.photo(`${constants_1.S3_BASE_URL}/stp-3.jpg`);
-    const stp4 = grammy_1.InputMediaBuilder.photo(`${constants_1.S3_BASE_URL}/stp-4.jpg`);
-    const stp5 = grammy_1.InputMediaBuilder.photo(`${constants_1.S3_BASE_URL}/stp-5.jpg`);
-    const stp6 = grammy_1.InputMediaBuilder.photo(`${constants_1.S3_BASE_URL}/stp-6.jpg`);
-    const stp7 = grammy_1.InputMediaBuilder.photo(`${constants_1.S3_BASE_URL}/stp-7.jpg`);
-    ctx.reply(constants_1.MENU_RULES_RESPONSE_1);
-    ctx.replyWithMediaGroup([stp1, stp2, stp3, stp4, stp5, stp6, stp7]);
-    ctx.reply(`${constants_1.MENU_RULES_RESPONSE_2} ${constants_1.RULES_TEXT_LINK}`, {
-        parse_mode: "HTML",
-        disable_web_page_preview: true
-    });
+  const stp1 = grammy_1.InputMediaBuilder.photo(
+    `${constants_1.S3_BASE_URL}/stp-1.jpg`
+  );
+  const stp2 = grammy_1.InputMediaBuilder.photo(
+    `${constants_1.S3_BASE_URL}/stp-2.jpg`
+  );
+  const stp3 = grammy_1.InputMediaBuilder.photo(
+    `${constants_1.S3_BASE_URL}/stp-3.jpg`
+  );
+  const stp4 = grammy_1.InputMediaBuilder.photo(
+    `${constants_1.S3_BASE_URL}/stp-4.jpg`
+  );
+  const stp5 = grammy_1.InputMediaBuilder.photo(
+    `${constants_1.S3_BASE_URL}/stp-5.jpg`
+  );
+  const stp6 = grammy_1.InputMediaBuilder.photo(
+    `${constants_1.S3_BASE_URL}/stp-6.jpg`
+  );
+  const stp7 = grammy_1.InputMediaBuilder.photo(
+    `${constants_1.S3_BASE_URL}/stp-7.jpg`
+  );
+  ctx.reply(constants_1.MENU_RULES_RESPONSE_1);
+  ctx.replyWithMediaGroup([stp1, stp2, stp3, stp4, stp5, stp6, stp7]);
+  ctx.reply(
+    `${constants_1.MENU_RULES_RESPONSE_2} ${constants_1.RULES_TEXT_LINK}`,
+    {
+      parse_mode: "HTML",
+      disable_web_page_preview: true
+    }
+  );
 });
 composer.hears(constants_1.MENU_SEND, async (ctx) => {
-    ctx.reply("Начнем соревнования! Отправьте сюда ваш чек из приложения");
+  ctx.reply("Начнем соревнования! Отправьте сюда ваш чек из приложения");
 });
 // получение ссылки на чек
 composer.on("message:text", async (ctx) => {
-    if (ctx.msg.text.includes(constants_1.OFD_URL)) {
-        try {
-            const url = new URL(ctx.msg.text);
-            const parsedData = query_string_1.default.parse(url.search);
-            if (isOFD(parsedData, constants_1.OFD_URL_FIELDS) &&
-                typeof parsedData.date === "string") {
-                if (parseInt(parsedData.date) > constants_1.GAME_START_TIME) {
-                    const checkSum = await parseCheckURL(url.href);
-                    await saveTransaction(parsedData, checkSum, ctx);
-                    sendConfirmMessage(ctx);
-                    await savePlayerPoints(checkSum, ctx);
-                    sendSuccessMessage(ctx);
-                }
-                else {
-                    throw new Error();
-                }
-            }
-            else {
-                throw new Error();
-            }
+  if (ctx.msg.text.includes(constants_1.OFD_URL)) {
+    try {
+      const url = new URL(ctx.msg.text);
+      const parsedData = query_string_1.default.parse(url.search);
+      if (
+        isOFD(parsedData, constants_1.OFD_URL_FIELDS) &&
+        typeof parsedData.date === "string"
+      ) {
+        if (parseInt(parsedData.date) > constants_1.GAME_START_TIME) {
+          const checkSum = await parseCheckURL(url.href);
+          await saveTransaction(parsedData, checkSum, ctx);
+          sendConfirmMessage(ctx);
+          await savePlayerPoints(checkSum, ctx);
+          sendSuccessMessage(ctx);
+        } else {
+          throw new Error();
         }
-        catch (error) {
-            sendFileCommonErrorMessage(ctx);
-            return false;
-        }
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      sendFileCommonErrorMessage(ctx);
+      return false;
     }
-    else {
-        sendFileCommonErrorMessage(ctx);
-    }
+  } else {
+    sendFileCommonErrorMessage(ctx);
+  }
 });
 function isOFD(params, check) {
-    const paramsFields = new Set(Object.keys(params));
-    return check.filter((i) => paramsFields.has(i)).length === check.length;
+  const paramsFields = new Set(Object.keys(params));
+  return check.filter((i) => paramsFields.has(i)).length === check.length;
 }
 async function sendFileCommonErrorMessage(ctx) {
-    ctx.replyWithPhoto(`${constants_1.S3_BASE_URL}/sm-error.png`, {
-        caption: constants_1.ERROR_TEXT,
-        parse_mode: "HTML",
-        disable_web_page_preview: true
-    });
+  ctx.replyWithPhoto(`${constants_1.S3_BASE_URL}/sm-error.png`, {
+    caption: constants_1.ERROR_TEXT,
+    parse_mode: "HTML",
+    disable_web_page_preview: true
+  });
 }
 async function sendConfirmMessage(ctx) {
-    ctx.replyWithPhoto(`${constants_1.S3_BASE_URL}/sm-success.png`, {
-        caption: constants_1.SUCCESS_1_TEXT
-    });
+  ctx.replyWithPhoto(`${constants_1.S3_BASE_URL}/sm-success.png`, {
+    caption: constants_1.SUCCESS_1_TEXT
+  });
 }
 async function sendSuccessMessage(ctx) {
-    ctx.reply(constants_1.SUCCESS_2_TEXT);
+  ctx.reply(constants_1.SUCCESS_2_TEXT);
 }
 async function parseCheckURL(url) {
-    return (0, got_1.default)(url)
-        .then((response) => {
-        const { document } = new jsdom_1.JSDOM(response.body).window;
-        const textContent = document
-            .getElementById("fido_cheque_container")
-            .textContent.replace(/\s+/g, "");
-        const isSamokat = textContent.includes("www.samokat.ru");
-        if (!isSamokat) {
-            throw new Error();
-        }
-        const match = textContent.match(/(<b>=<span>([]*.*)<\/span><\/b>)/gi);
-        const el = document.createElement("div");
-        el.innerHTML = match[0];
-        const checkSum = el.children[0].textContent.slice(1);
-        return parseInt(checkSum);
-    })
-        .catch((err) => {
+  return (0, got_1.default)(url)
+    .then((response) => {
+      const { document } = new jsdom_1.JSDOM(response.body).window;
+      const textContent = document
+        .getElementById("fido_cheque_container")
+        .textContent.replace(/\s+/g, "");
+      const isSamokat = textContent.includes("www.samokat.ru");
+      if (!isSamokat) {
         throw new Error();
+      }
+      const match = textContent.match(/(<b>=<span>([]*.*)<\/span><\/b>)/gi);
+      const el = document.createElement("div");
+      el.innerHTML = match[0];
+      const checkSum = el.children[0].textContent.slice(1);
+      return parseInt(checkSum);
+    })
+    .catch((err) => {
+      throw new Error();
     });
 }
 async function getPlayer(id) {
-    const query = qs_1.default.stringify({
-        filters: {
-            ["tgId"]: {
-                $eq: id
-            }
-        }
-    });
-    return fetch(`${constants_1.API_BASE_URL}api/players?${query}`, {
-        method: "get",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: constants_1.API_AUTH_TOKEN
-        }
-    })
-        .then((res) => res.json())
-        .then((data) => {
-        if (!Array.isArray(data.data) && data?.error) {
-            throw new Error("FIND PLAYER ERROR");
-        }
-        return data.data[0];
-    })
-        .catch(() => {
+  const query = qs_1.default.stringify({
+    filters: {
+      ["tgId"]: {
+        $eq: id
+      }
+    }
+  });
+  return fetch(`${constants_1.API_BASE_URL}api/players?${query}`, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: constants_1.API_AUTH_TOKEN
+    }
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!Array.isArray(data.data) && data?.error) {
         throw new Error("FIND PLAYER ERROR");
+      }
+      return data.data[0];
+    })
+    .catch(() => {
+      throw new Error("FIND PLAYER ERROR");
     });
 }
 async function createPlayer(data) {
-    const player = {
-        name: data.username,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        tgId: data.id.toString()
-    };
-    return fetch(`${constants_1.API_BASE_URL}api/players`, {
-        method: "post",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: constants_1.API_AUTH_TOKEN
-        },
-        body: JSON.stringify({ data: { ...player } })
-    }).catch(() => {
-        throw new Error("CREATE PLAYER ERROR");
-    });
+  const player = {
+    name: data.username,
+    firstName: data.first_name,
+    lastName: data.last_name,
+    tgId: data.id.toString()
+  };
+  return fetch(`${constants_1.API_BASE_URL}api/players`, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: constants_1.API_AUTH_TOKEN
+    },
+    body: JSON.stringify({ data: { ...player } })
+  }).catch(() => {
+    throw new Error("CREATE PLAYER ERROR");
+  });
 }
 async function saveTransaction(data, checkSum, ctx) {
-    const user = await getPlayer(ctx.update.message.from.id);
-    if (!user?.id) {
-        return false;
-    }
-    const transaction = {
-        ofd_url: ctx.update.message.text,
-        ofd_date: data.date,
-        ofd_id: data.id,
-        ofd_fp: data.fp,
-        sum: checkSum,
-        player: user.id
-    };
-    return fetch(`${constants_1.API_BASE_URL}api/transactions`, {
-        method: "post",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: constants_1.API_AUTH_TOKEN
-        },
-        body: JSON.stringify({ data: { ...transaction } })
-    })
-        .then((res) => res.json())
-        .then((data) => {
-        if (!Array.isArray(data) && data?.error) {
-            throw new Error("CREATE TRANSACTION ERROR");
-        }
-        return data.data[0];
-    })
-        .catch((error) => {
+  const user = await getPlayer(ctx.update.message.from.id);
+  if (!user?.id) {
+    return false;
+  }
+  const transaction = {
+    ofd_url: ctx.update.message.text,
+    ofd_date: data.date,
+    ofd_id: data.id,
+    ofd_fp: data.fp,
+    sum: checkSum,
+    player: user.id
+  };
+  return fetch(`${constants_1.API_BASE_URL}api/transactions`, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: constants_1.API_AUTH_TOKEN
+    },
+    body: JSON.stringify({ data: { ...transaction } })
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!Array.isArray(data) && data?.error) {
         throw new Error("CREATE TRANSACTION ERROR");
+      }
+      return data.data[0];
+    })
+    .catch((error) => {
+      throw new Error("CREATE TRANSACTION ERROR");
     });
 }
 async function savePlayerPoints(checkSum, ctx) {
-    const user = await getPlayer(ctx.update.message.from.id);
-    if (!user?.id) {
-        return false;
-    }
-    const newPoints = user.attributes.points + (checkSum / 600).toFixed(2);
-    const updatedData = {
-        points: newPoints
-    };
-    return fetch(`${constants_1.API_BASE_URL}api/players/${user.id}`, {
-        method: "put",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: constants_1.API_AUTH_TOKEN
-        },
-        body: JSON.stringify({ data: { ...updatedData } })
-    })
-        .then((res) => res.json())
-        .then((data) => {
-        console.error("data", data);
-        if (!Array.isArray(data) && data?.error) {
-            throw new Error("SAVE PLAYER POINTS ERROR");
-        }
-    })
-        .catch((error) => {
+  const user = await getPlayer(ctx.update.message.from.id);
+  if (!user?.id) {
+    return false;
+  }
+  const newPoints = user.attributes.points + (checkSum / 600).toFixed(2);
+  const updatedData = {
+    points: newPoints
+  };
+  return fetch(`${constants_1.API_BASE_URL}api/players/${user.id}`, {
+    method: "put",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: constants_1.API_AUTH_TOKEN
+    },
+    body: JSON.stringify({ data: { ...updatedData } })
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.error("data", data);
+      if (!Array.isArray(data) && data?.error) {
         throw new Error("SAVE PLAYER POINTS ERROR");
+      }
+    })
+    .catch((error) => {
+      throw new Error("SAVE PLAYER POINTS ERROR");
     });
 }
 exports.default = composer;

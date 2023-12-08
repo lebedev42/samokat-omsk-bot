@@ -1,7 +1,7 @@
-export const APP_BASE_URL = `${process.env.BOT_API_URL}/`;
-export const API_BASE_URL = `${process.env.API_URL}/`;
+export const WEBAPP_URL = `${process.env.WEBAPP_URL}`;
+export const API_URL = `${process.env.API_URL}`;
 export const S3_BASE_URL =
-  "https://s3.timeweb.com/1c0bdec3-800f68a6-871b-482a-becc-2ed21b03fd6b/";
+  "https://s3.timeweb.com/1c0bdec3-800f68a6-871b-482a-becc-2ed21b03fd6b";
 
 export const API_AUTH_TOKEN =
   "Bearer 91b22b119b5dd002764d42c87983a597c5a7c6b6705d8459db7566e392fd6f20ceb0d815a5b33e593c9452c74f5390bce995da88ca516b1506fa0f58c9011a5ce84770980890335358bebf167895c67a33f5f3a523b4cef2169edc459323f83591a4d287525e1150522639d419a9f6b9dff8334e491ff7fc5a32b34fdbc6d533";
