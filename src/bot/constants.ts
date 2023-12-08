@@ -1,5 +1,5 @@
 export const APP_BASE_URL = `${process.env.BOT_API_URL}/`;
-export const API_BASE_URL = `http://localhost:1337/`;
+export const API_BASE_URL = `${process.env.API_URL}/`;
 export const S3_BASE_URL =
   "https://s3.timeweb.com/1c0bdec3-800f68a6-871b-482a-becc-2ed21b03fd6b/";
 
