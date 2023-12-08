@@ -191,6 +191,8 @@ async function getPlayer(id) {
     }
   });
 
+  console.error("API_URL", API_URL);
+
   return fetch(`${API_URL}/api/players?${query}`, {
     method: "get",
     headers: {
