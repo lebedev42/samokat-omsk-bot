@@ -47,8 +47,6 @@ composer.command("table", async (ctx) => {
 });
 
 composer.command("start", async (ctx) => {
-  console.error("ctx", ctx);
-
   const keyboards = new Keyboard()
     .text(MENU_RULES)
     .row()
