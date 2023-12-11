@@ -47,6 +47,8 @@ composer.command("table", async (ctx) => {
 });
 
 composer.command("start", async (ctx) => {
+  console.error("ctx", ctx);
+
   const keyboards = new Keyboard()
     .text(MENU_RULES)
     .row()
@@ -108,11 +110,12 @@ composer.on("message:text", async (ctx) => {
       ) {
         if (parseInt(parsedData.date) > GAME_START_TIME) {
           const checkSum = await parseCheckURL(url.href);
+
+          console.error("checkSum", checkSum);
           await saveTransaction(parsedData, checkSum, ctx);
           sendConfirmMessage(ctx);
 
           await savePlayerPoints(checkSum, ctx);
-
           sendSuccessMessage(ctx);
         } else {
           throw new Error();
@@ -254,6 +257,7 @@ async function saveTransaction(data, checkSum, ctx) {
   })
     .then((res) => res.json())
     .then((data) => {
+      console.error("data?.error", data?.error);
       if (!Array.isArray(data) && data?.error) {
         throw new Error("CREATE TRANSACTION ERROR");
       }

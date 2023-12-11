@@ -62,6 +62,10 @@
   </style>
 
   <style type="text/css">
+    body.ios {
+      zoom: 1.2;
+    }
+
     .wrapper {
       padding: 1rem;
     }
@@ -108,8 +112,9 @@
       justify-content: center;
       background-color: rgba(166, 166, 166, 0.3);
       border-radius: 0.4rem;
-      width: 3rem;
+      padding: 0 0.3rem;
       margin-right: 0.4rem;
+      min-width: 3rem;
     }
     .item.current .item-number {
       color: #ffffff;
@@ -119,10 +124,11 @@
     .item-name {
       color: #404040;
       font-size: 1rem;
-      line-height: 3rem;
       font-family: Euclid Circular A;
       font-weight: 500;
-      word-wrap: break-word;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: inline-block;
     }
     .item.current .item-name {
       color: #ffffff;
@@ -179,6 +185,20 @@
   // Функция для выполнения GET-запросов
   var tgUser = new URLSearchParams(window.location.search).get('user');
 
+  function iOS() {
+    return [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod',
+      'MacIntel'
+    ].includes(navigator.platform)
+    // iPad on iOS 13 detection
+    || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  }
+
   function createItemElement(className, index, name, points) {
     var userItem = document.createElement('div');
     userItem.className = "item" + ` ${className}`;
@@ -201,7 +221,7 @@
     return userItem;
   }
 
-  async function getUser(callback) {
+  async function getAllUsers(callback) {
     await fetch(`/api/players?user=${tgUser}`)
     .then(response => {
       if (!response.ok) {
@@ -210,51 +230,27 @@
       return response.json();
     })
     .then(data => {
-      callback(data.data);
+      callback(data);
     })
     .catch(error => {
       console.error('Error:', error);
-    });
-  }
-
-  async function getAllUsers(callback) {
-    await fetch('/api/players')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      callback(data.data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }
-
-  function displayUser(data) {
-    var userCurrent = document.getElementById('current');
-
-    data.forEach(function(user, index) {
-      var item = createItemElement('current', index + 1, user.attributes.name, user.attributes.points);
-      userCurrent.appendChild(item);
     });
   }
 
   function displayList(data) {
     var usersList = document.getElementById('list');
 
+    if (iOS()) {
+      document.body.classList.add('ios');
+    }
+
     data.forEach(function(user, index) {
-      if (user.attributes.tgId !== parseInt(tgUser)) {
-        var item = createItemElement('', index + 1, user.attributes.name, user.attributes.points);
-        usersList.appendChild(item);
-      }
+      var item = createItemElement(user.isUser ? 'current' : '', user.place, user.name, user.points);
+      usersList.appendChild(item);
     });
   }
 
   // Выполнение GET-запроса к API и отображение списка
-  getUser(displayUser);
   getAllUsers(displayList);
   </script>
 
