@@ -70,7 +70,9 @@ composer.command("start", async (ctx) => {
       reply_markup: keyboards
     });
   } else {
-    ctx.reply(`Вы уже зарегистрированы. ${HELLO_RESPONSE_2}`);
+    ctx.reply(`Вы уже зарегистрированы. ${HELLO_RESPONSE_2}`, {
+      reply_markup: keyboards
+    });
   }
 });
 

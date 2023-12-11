@@ -246,7 +246,7 @@
   }
 
   async function getAllUsers(callback) {
-    await fetch(`/api/players?user=${tgUser}`)
+    await fetch(`/bot/api/players?user=${tgUser}`)
     .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
