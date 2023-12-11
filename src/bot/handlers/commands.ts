@@ -20,6 +20,8 @@ import {
   MENU_RULES_RESPONSE_1,
   MENU_RULES_RESPONSE_2,
   MENU_SEND,
+  MENU_SEND_RESPONSE_1,
+  MENU_SEND_RESPONSE_2,
   MENU_TABLE,
   OFD_URL,
   OFD_URL_FIELDS,
@@ -64,14 +66,12 @@ composer.command("start", async (ctx) => {
     await createPlayer(ctx.update.message.from);
 
     ctx.replyWithPhoto(`${S3_BASE_URL}/sm-hello.png`, {
-      caption: HELLO_RESPONSE_1
+      caption: `${HELLO_RESPONSE_1} ${HELLO_RESPONSE_2}`,
+      reply_markup: keyboards
     });
   } else {
-    ctx.reply("Вы уже зарегистрированы");
+    ctx.reply(`Вы уже зарегистрированы. ${HELLO_RESPONSE_2}`);
   }
-  await ctx.reply(HELLO_RESPONSE_2, {
-    reply_markup: keyboards
-  });
 });
 
 composer.hears(MENU_RULES, async (ctx) => {
@@ -92,7 +92,14 @@ composer.hears(MENU_RULES, async (ctx) => {
 });
 
 composer.hears(MENU_SEND, async (ctx) => {
-  ctx.reply("Начнем соревнования! Отправьте сюда ваш чек из приложения");
+  const user = await getPlayer(ctx.update.message.from.id);
+
+  if (user.attributes?.inGame) {
+    ctx.reply(MENU_SEND_RESPONSE_2);
+  } else {
+    await savePlayerInGame(user.id);
+    ctx.reply(MENU_SEND_RESPONSE_1);
+  }
 });
 
 // получение ссылки на чек
@@ -109,7 +116,6 @@ composer.on("message:text", async (ctx) => {
         if (parseInt(parsedData.date) > GAME_START_TIME) {
           const checkSum = await parseCheckURL(url.href);
 
-          console.error("checkSum", checkSum);
           await saveTransaction(parsedData, checkSum, ctx);
           sendConfirmMessage(ctx);
 
@@ -296,6 +302,30 @@ async function savePlayerPoints(checkSum, ctx) {
     })
     .catch((error) => {
       throw new Error("SAVE PLAYER POINTS ERROR");
+    });
+}
+
+async function savePlayerInGame(id) {
+  const updatedData = {
+    inGame: true
+  };
+
+  return fetch(`${API_URL}/api/players/${id}`, {
+    method: "put",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: API_AUTH_TOKEN
+    },
+    body: JSON.stringify({ data: { ...updatedData } })
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!Array.isArray(data) && data?.error) {
+        throw new Error("SAVE PLAYER ERROR");
+      }
+    })
+    .catch((error) => {
+      throw new Error("SAVE PLAYER ERROR");
     });
 }
 

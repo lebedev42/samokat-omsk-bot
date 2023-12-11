@@ -22,8 +22,10 @@ export const MENU_RULES_RESPONSE_2 =
 export const MENU_TABLE = "Рейтинг";
 
 export const MENU_SEND = "Отправить чек";
-export const MENU_SEND_RESPONSE =
+export const MENU_SEND_RESPONSE_1 =
   "Начнём турнир! Загрузите ссылку на чек в ответ на это сообщение.";
+export const MENU_SEND_RESPONSE_2 =
+  "Загрузите ссылку на чек в ответ на это сообщение.";
 
 export const ERROR_TEXT = `Какая-то ошибка… Кажется, ваш чек не соответствует условиям акции. Проверьте их <a href='${S3_BASE_URL}/sm-error.png'>тут</a> и попробуйте снова.`;
 export const SUCCESS_1_TEXT = "Спасибо! Забираем чек на модерацию.";
