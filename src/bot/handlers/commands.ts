@@ -19,6 +19,7 @@ import {
   MENU_RULES,
   MENU_RULES_RESPONSE_1,
   MENU_RULES_RESPONSE_2,
+  MENU_RULES_RESPONSE_3,
   MENU_SEND,
   MENU_SEND_RESPONSE_1,
   MENU_SEND_RESPONSE_2,
@@ -66,7 +67,8 @@ composer.command("start", async (ctx) => {
     await createPlayer(ctx.update.message.from);
 
     ctx.replyWithPhoto(`${S3_BASE_URL}/sm-hello.png`, {
-      caption: `${HELLO_RESPONSE_1} ${HELLO_RESPONSE_2}`,
+      caption: `${HELLO_RESPONSE_1}\n\n${HELLO_RESPONSE_2}`,
+      parse_mode: "HTML",
       reply_markup: keyboards
     });
   } else {
@@ -85,9 +87,12 @@ composer.hears(MENU_RULES, async (ctx) => {
   const stp6 = InputMediaBuilder.photo(`${S3_BASE_URL}/stp-6.jpg`);
   const stp7 = InputMediaBuilder.photo(`${S3_BASE_URL}/stp-7.jpg`);
 
-  ctx.reply(MENU_RULES_RESPONSE_1);
+  ctx.reply(MENU_RULES_RESPONSE_1, {
+    parse_mode: "HTML"
+  });
+  ctx.reply(MENU_RULES_RESPONSE_2);
   ctx.replyWithMediaGroup([stp1, stp2, stp3, stp4, stp5, stp6, stp7]);
-  ctx.reply(`${MENU_RULES_RESPONSE_2} ${RULES_TEXT_LINK}`, {
+  ctx.reply(`${MENU_RULES_RESPONSE_3}\n\n${RULES_TEXT_LINK}`, {
     parse_mode: "HTML",
     disable_web_page_preview: true
   });
@@ -263,7 +268,6 @@ async function saveTransaction(data, checkSum, ctx) {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.error("data?.error", data?.error);
       if (!Array.isArray(data) && data?.error) {
         throw new Error("CREATE TRANSACTION ERROR");
       }
@@ -297,7 +301,6 @@ async function savePlayerPoints(checkSum, ctx) {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.error("data", data);
       if (!Array.isArray(data) && data?.error) {
         throw new Error("SAVE PLAYER POINTS ERROR");
       }
